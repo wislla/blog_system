@@ -6,117 +6,116 @@ Este é um projeto de um sistema de blog construído com Flask, Flask-SQLAlchemy
 
 ```bash
 blog_system/
-│
-├── blog_system/
-│   ├── __init__.py
-│   ├── api/
-│   │   ├── __init__.py
-│   │   ├── auth.py
-│   │   ├── posts.py
-│   ├── config.py
-│   ├── extensions.py
-│   ├── models.py
-│   ├── schemas.py
-│   ├── routes.py
-│
+├── api/
+│ ├── auth.py
+│ ├── posts.py
+├── core/
+│ ├── init.py
+│ ├── config.py
+│ ├── extensions.py
+│ ├── models.py
+│ ├── routes.py
+│ └── schemas.py
+├── scripts/
+│ └── create_database.py
 ├── tests/
-│   ├── __init__.py
-│   ├── test_auth.py
-│   ├── test_posts.py
-│
-├── create_database.py
-├── pyproject.toml
-├── README.md
+├── venv/
+├── requirements.txt
+└── pyproject.toml
 
 ```
-## Configuração 
 
-### Clone o repositório:
+## Instalação
 
+1. Clone o repositório:
 
-```console
+    ```bash
+    git clone https://github.com/wislla/blog_system.git
+    cd blog_system
+    ```
 
-git clone https://github.com/wislla/blog_system.git
-cd blog_system
-```
-Crie e ative um ambiente virtual:
+2. Instale as dependências usando Poetry:
 
-```bash
+    ```bash
+    poetry install
+    ```
 
-python3 -m venv venv
-source venv/bin/activate
-```
-Instale as dependências usando Poetry:
+3. Ative o ambiente virtual:
 
-```bash
+    ```bash
+    poetry shell
+    ```
 
-poetry install
-```
+## Configuração do Banco de Dados
 
-Configuração do Banco de Dados:
+1. **Criar o Banco de Dados e as Tabelas:**
 
-Crie o arquivo create_database.py para inicializar o banco de dados:
+    Execute o script para criar o banco de dados e as tabelas:
 
-```python
+    ```bash
+    poetry run python scripts/create_database.py
+    ```
 
-# create_database.py
+## Uso
 
-from blog_system.extensions import db
-from blog_system import create_app
+1. **Rodar a Aplicação:**
 
-app = create_app()
-with app.app_context():
-    db.create_all()
-```
+    Inicie o servidor Flask:
 
-Execute o script para criar o banco de dados:
+    ```bash
+    export FLASK_APP=manage.py
+    export FLASK_ENV=development
+    poetry run flask run
+    ```
 
-```bash
-  python create_database.py
-```
+    A aplicação estará disponível em `http://127.0.0.1:5000/`.
 
-Executando o Projeto
-Ative o ambiente virtual:
+2. **Adicionar Registros ao Banco de Dados via Shell Interativo:**
 
-```bash
-source venv/bin/activate
-```
-Execute o servidor Flask:
+    Inicie o shell Flask:
 
-```bash
+    ```bash
+    poetry run flask shell
+    ```
 
-  export FLASK_APP=blog_system
-  export FLASK_ENV=development
-  flask run
-  
-  Acesse a aplicação:
-  
-  Abra seu navegador e vá para http://127.0.0.1:5000.
-```
-# Estrutura dos Arquivos
+    Adicione um novo post:
 
-    blog_system/init.py: Configura a aplicação Flask e inicializa as extensões.
-    blog_system/api/: Contém os blueprints para autenticação e posts.
-    blog_system/config.py: Configurações da aplicação.
-    blog_system/extensions.py: Inicializa as extensões da aplicação (SQLAlchemy, Marshmallow, etc).
-    blog_system/models.py: Define os modelos de banco de dados para usuários e posts.
-    blog_system/schemas.py: Define os schemas de serialização para usuários e posts.
-    blog_system/routes.py: Define as rotas da aplicação.
-    tests/: Contém testes para a aplicação.
+    ```python
+    from core import create_app
+    from core.models import db, Post
 
-# Contribuição
+    app = create_app()
+    with app.app_context():
+        new_post = Post(title='Meu Primeiro Post', content='Este é o conteúdo do meu primeiro post.')
 
-    Fork o projeto.
-    Crie uma nova branch (git checkout -b feature/MinhaFeature).
-    Commit suas mudanças (git commit -m 'Adicionei uma nova feature').
-    Push para a branch (git push origin feature/MinhaFeature).
-    Abra um Pull Request.
+        db.session.add(new_post)
+        db.session.commit()
 
-# Licença
- Este projeto está licenciado sob a Licença MIT. Veja o arquivo LICENSE para mais detalhes.
- 
-# Contato
+        print(Post.query.all())
+    ```
 
-Wislla - wislla21@gmail.com
+3. **Adicionar Registros ao Banco de Dados via API:**
 
-Sinta-se à vontade para abrir uma issue se tiver alguma dúvida ou sugestão.
+    Você pode usar o endpoint `/posts` para criar novos posts. Envie uma requisição `POST` com o seguinte corpo JSON:
+
+    ```json
+    {
+        "title": "Título do Post",
+        "content": "Conteúdo do post."
+    }
+    ```
+
+## Estrutura dos Modelos
+
+- **Post:** Representa um post no blog com campos para `title` e `content`.
+
+## Contribuindo
+
+1. Faça um fork do repositório.
+2. Crie uma branch para suas alterações.
+3. Faça um commit e envie suas alterações.
+4. Abra um pull request.
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
