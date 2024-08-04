@@ -1,11 +1,9 @@
-# scripts/create_database.py
+# blog_system/scripts/create_database.py
+from core import create_app
+from core.extensions import db
 
-from blog_system import app, db
-# from blog_system.models import User, Post
+app = create_app()
 
-# Garantindo que estamos no contexto da aplicação Flask
 with app.app_context():
-    # Cria todas as tabelas definidas nos modelos
     db.create_all()
-
-print("Banco de dados criado com sucesso!")
+    print("Database created successfully.")
